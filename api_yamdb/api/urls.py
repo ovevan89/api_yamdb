@@ -4,6 +4,9 @@ from api import views
 
 router = DefaultRouter()
 router.register(r'users', views.UserModelViewSet)
+router.register('categories', views.CategoryViewSet)
+router.register('genres', views.GenerViewSet)
+
 
 app_name = 'api_v1'
 

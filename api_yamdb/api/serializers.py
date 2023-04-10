@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from review.models import User
+from rest_framework.relations import SlugRelatedField
+
+from review.models import (User, Category, Gener, Title)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -20,3 +22,40 @@ class TokenSerializer(serializers.Serializer):
     """Создаем кастомный сериализатор с нужными полями для получения токена."""
     username = serializers.CharField()
     confirmation_code = serializers.CharField()
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = "__all__"
+        lookup_field = 'slug'
+        extra_kwargs = {
+            'url': {'lookup_field': 'slug'}
+        }
+
+
+class GenerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Gener
+        fields = "__all__"
+        lookup_field = 'slug'
+        extra_kwargs = {
+            'url': {'lookup_field': 'slug'}
+        }
+
+
+class TitleSerializer(serializers.ModelSerializer):
+    # todo преопределить поля категории и жанра
+    category = SlugRelatedField(
+        read_only=True,
+        slug_field='slug'
+    )
+    genre = SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='slug'
+    )
+
+    class Meta:
+        model = Title
+        fields = "__all__"
