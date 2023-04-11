@@ -1,3 +1,6 @@
+import datetime
+
+from django.core.validators import MaxValueValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -64,12 +67,13 @@ class Gener(models.Model):
 
 class Title(models.Model):
     name = models.CharField(max_length=256)
-    year = models.PositiveSmallIntegerField()
+    year = models.PositiveSmallIntegerField(
+        validators=[MaxValueValidator(datetime.date.today().year)]
+    )
     description = models.TextField(blank=True, null=True)
     genre = models.ManyToManyField(
         Gener,
-        related_name='titles',
-        blank=True, null=True
+        related_name='titles'
     )
     category = models.ForeignKey(
         Category,
