@@ -6,7 +6,7 @@ router = DefaultRouter()
 router.register(r'users', views.UserModelViewSet)
 router.register('categories', views.CategoryViewSet)
 router.register('genres', views.GenerViewSet)
-
+router.register('titles', views.TitleViewSet)
 
 app_name = 'api_v1'
 
