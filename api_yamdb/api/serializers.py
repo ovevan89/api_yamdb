@@ -6,6 +6,7 @@ from review.models import (User, Category, Gener, Title)
 
 class UserSerializer(serializers.ModelSerializer):
     """Общий сериализатор для модели User."""
+
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name', 'bio', 'role')
