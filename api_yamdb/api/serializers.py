@@ -1,7 +1,8 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from rest_framework.relations import SlugRelatedField
 
-from review.models import (User, Category, Gener, Title)
+from review.models import Category, Gener, Title, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -9,14 +10,33 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'bio', 'role')
+        fields = (
+            'username', 'email', 'first_name', 'last_name', 'bio', 'role'
+        )
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    """Сериализатор для endpoint 'me'. """
+
+    class Meta:
+        model = User
+        fields = (
+            'username', 'email', 'first_name', 'last_name', 'bio', 'role'
+        )
+        read_only_fields = ('role',)
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """Создаем сериализатор регистрации юзеров и отправки секретного кода."""
+
     class Meta:
         model = User
         fields = ('email', 'username')
+
+    def validate_username(self, value):
+        if value.lower() == "me":
+            raise ValidationError("Username 'me' is not valid")
+        return value
 
 
 class TokenSerializer(serializers.Serializer):
