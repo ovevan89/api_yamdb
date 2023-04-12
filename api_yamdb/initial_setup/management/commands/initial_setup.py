@@ -49,7 +49,12 @@ class Command(BaseCommand):
         file_path = finders.find(f'data/{file_name}')
         with open(file_path, 'r', encoding="utf-8") as file:
             data_reader = csv.DictReader(file)
-            data = [row for row in data_reader]
+            data = []
+            for row in data_reader:
+                for key, value in row.items():
+                    if value.isdigit():
+                        row[key] = int(value)
+                data.append(row)
         return data
 
     @staticmethod
@@ -76,8 +81,13 @@ class Command(BaseCommand):
 
         if options['all'] or options['add_titles']:
             titles = self.get_data('titles.csv')
-            self.create_objects(Title, titles)
-            # gener_titles = self.get_data('genre_title.csv')
+            gener_titles = self.get_data('genre_title.csv')
+            # for el in gener_titles:
+            #     try:
+            #         title = Title.objects.get(id=el['title_id'])
+            #         title.genre.add(el['genre_id'])
+            #     except Exception as e:
+            #         print(f'Failed to add genre to title, error: {e}')
 
         # if options['all'] or options['add_reviews']:
         #     reviews = self.get_data('review.csv')
