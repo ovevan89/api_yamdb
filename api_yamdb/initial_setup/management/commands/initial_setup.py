@@ -1,20 +1,18 @@
 import csv
 import logging
-import os
 
 from django.contrib.staticfiles import finders
 
 from django.core.management import BaseCommand
 
-from api_yamdb.settings import STATICFILES_DIRS
 from review.models import User, Category, Gener, Title
 
 logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = 'Upload database with initial configuration data.' \
-           'Must be triggered after migrations'
+    help = ('Upload database with initial configuration data. '
+            'Must be triggered after migrations')
 
     def add_arguments(self, parser):
         parser.add_argument('--add_users',
@@ -49,20 +47,9 @@ class Command(BaseCommand):
     @staticmethod
     def get_data(file_name):
         file_path = finders.find(f'data/{file_name}')
-        with open(file_path) as file:
-            data_reader = csv.reader(file)
-            data = []
-            field_names = {}
-            print(data_reader)
-            for index, row in enumerate(data_reader):
-                print(row)
-                if index == 0:
-                    for i, name in enumerate(row):
-                        field_names[i] = name
-                    continue
-                data.append(
-                    {field_names[i]: el for i, el in enumerate(row)}
-                )
+        with open(file_path, 'r', encoding="utf-8") as file:
+            data_reader = csv.DictReader(file)
+            data = [row for row in data_reader]
         return data
 
     @staticmethod
@@ -88,7 +75,6 @@ class Command(BaseCommand):
             self.create_objects(Gener, genres)
 
         if options['all'] or options['add_titles']:
-            # todo разобрать ошибку дописать жанры-произведение
             titles = self.get_data('titles.csv')
             self.create_objects(Title, titles)
             # gener_titles = self.get_data('genre_title.csv')
