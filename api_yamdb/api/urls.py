@@ -9,7 +9,8 @@ router.register('categories', views.CategoryViewSet)
 router.register('genres', views.GenerViewSet)
 router.register('titles', views.TitleViewSet)
 router.register(
-    r'titles/(?P<title_id>\d+)/reviews', views.ReviewViewSet, basename='reviews'
+    r'titles/(?P<title_id>\d+)/reviews',
+    views.ReviewViewSet, basename='reviews'
 )
 router.register(
     r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
