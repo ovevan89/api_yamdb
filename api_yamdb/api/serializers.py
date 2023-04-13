@@ -58,7 +58,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class GenerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Gener
+        model = Genre
         fields = "__all__"
         lookup_field = 'slug'
         extra_kwargs = {
@@ -75,7 +75,7 @@ class TitleSerializer(serializers.ModelSerializer):
     genre = SlugRelatedField(
         many=True,
         slug_field='slug',
-        queryset=Gener.objects.all()
+        queryset=Genre.objects.all()
     )
     # rating =
 
