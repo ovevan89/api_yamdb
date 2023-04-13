@@ -1,6 +1,6 @@
 import datetime
 
-from django.core.validators import MaxValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -84,3 +84,71 @@ class Title(models.Model):
 
     def __str__(self):
         return f'{self.name} - {self.year}'
+
+
+class Review(models.Model):
+    title = models.ForeignKey(
+        Title, on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name='Произведение',
+        help_text='Произведение, на которое написан отзыв'
+    )
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name='Автор',
+        help_text='Автор отзыва'
+    )
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата отзыва',
+        help_text='Дата написания отзыва'
+    )
+    text = models.TextField(
+        verbose_name='Текст отзыва',
+        help_text='Напишите отзыв'
+    )
+    score = models.IntegerField(
+        verbose_name='Рейтинг',
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(10)
+        ],
+        help_text='Введите оценку произведения от 1 до 10',
+    )
+
+    class Meta:
+        ordering = ['-pub_date']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['title', 'author'],
+                name='unique_review'
+            ),
+        ]
+
+    def __str__(self):
+        return self.text
+
+
+class Comment(models.Model):
+    text = models.TextField(
+        verbose_name='Комментарий',
+        help_text='Текст комментария'
+    )
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name='Автор'
+    )
+    review = models.ForeignKey(
+        Review, on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name='Отзыв',
+    )
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата отзыва',
+    )
+
+    class Meta:
+        ordering = ['-pub_date']

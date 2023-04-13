@@ -1,7 +1,8 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
 
-from review.models import (User, Category, Gener, Title)
+from review.models import (User, Category, Gener, Title, Review, Comment)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -59,3 +60,37 @@ class TitleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Title
         fields = "__all__"
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        slug_field='username',
+        read_only=True
+    )
+
+    class Meta:
+        model = Review
+        fields = ('id', 'text', 'author', 'score', 'pub_date')
+
+    def validate(self, data):
+        if self.context['request'].method != 'POST':
+            return data
+        user = self.context['request'].user
+        title_id = self.context['view'].kwargs.get('title_id')
+        title = get_object_or_404(Title, pk=title_id)
+        if Review.objects.filter(title=title, author=user).exists():
+            raise serializers.ValidationError(
+                'Нельзя написать больше одного отзыва'
+            )
+        return data
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        slug_field='username',
+        read_only=True
+    )
+
+    class Meta:
+        medel = Comment
+        fields = ('id', 'text', 'author', 'pub_date', 'review')
