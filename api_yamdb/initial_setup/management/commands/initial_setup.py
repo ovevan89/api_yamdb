@@ -85,7 +85,6 @@ class Command(BaseCommand):
     def create_objects(self, model, file_name):
         data = self.get_data(model, file_name)
         for el in data:
-            print(el)
             try:
                 obj = model.objects.create(**el)
                 print(f'Object {model.__name__} was created with id {obj.id}')

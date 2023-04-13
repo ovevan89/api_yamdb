@@ -8,9 +8,10 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework_simplejwt.tokens import AccessToken
 
 from api import serializers
+from api.filters import TitleFilter
 from api.permissions import AdminOrReadOnly, IsAdmin
 from api.serializers import (CategorySerializer, GenerSerializer,
-                             TitleSerializer)
+                             TitlePostSerializer, TitleGetSerializer)
 from review.models import Category, Genre, Title, User
 from utils.function import send_user_email
 
@@ -93,7 +94,10 @@ class CategoryViewSet(mixins.CreateModelMixin,
     pagination_class = LimitOffsetPagination
 
 
-class GenerViewSet(ModelViewSet):
+class GenerViewSet(mixins.CreateModelMixin,
+                   mixins.DestroyModelMixin,
+                   mixins.ListModelMixin,
+                   GenericViewSet):
     model = Genre
     serializer_class = GenerSerializer
     queryset = Genre.objects.all()
@@ -106,9 +110,15 @@ class GenerViewSet(ModelViewSet):
 
 class TitleViewSet(ModelViewSet):
     model = Title
-    serializer_class = TitleSerializer
+    serializer_class = TitlePostSerializer
     queryset = Title.objects.all()
     permission_classes = (AdminOrReadOnly,)
-    filter_backends = [filters.SearchFilter]
-    search_fields = ('name', 'year', 'category__slug', 'genre__slug')
+    filterset_class = TitleFilter
+    # filter_backends = [filters.SearchFilter]
+    # search_fields = ('name', 'year', 'category__slug', 'genre__slug')
     pagination_class = LimitOffsetPagination
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return TitleGetSerializer
+        return TitlePostSerializer
