@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.relations import SlugRelatedField
 
-from review.models import Category, Gener, Title, User, Review, Comment
+from review.models import Category, Title, User, Review, Comment, Genre
 
 
 class UserSerializer(serializers.ModelSerializer):
