@@ -49,7 +49,7 @@ class TokenSerializer(serializers.Serializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = "__all__"
+        exclude = ('id',)
         lookup_field = 'slug'
         extra_kwargs = {
             'url': {'lookup_field': 'slug'}
@@ -59,15 +59,14 @@ class CategorySerializer(serializers.ModelSerializer):
 class GenerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
-        fields = "__all__"
+        exclude = ('id',)
         lookup_field = 'slug'
         extra_kwargs = {
             'url': {'lookup_field': 'slug'}
         }
 
 
-class TitleSerializer(serializers.ModelSerializer):
-    # todo добавить поле рейтинг
+class TitlePostSerializer(serializers.ModelSerializer):
     category = SlugRelatedField(
         slug_field='slug',
         queryset=Category.objects.all()
@@ -77,7 +76,7 @@ class TitleSerializer(serializers.ModelSerializer):
         slug_field='slug',
         queryset=Genre.objects.all()
     )
-    # rating =
+    rating = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Title
@@ -86,6 +85,19 @@ class TitleSerializer(serializers.ModelSerializer):
             'genre': {'required': True},
             'category': {'required': True}
         }
+
+    def get_rating(self, obj):
+        return None
+
+
+class TitleGetSerializer(TitlePostSerializer):
+    category = CategorySerializer()
+    genre = GenerSerializer(many=True)
+
+    class Meta:
+        model = Title
+        fields = "__all__"
+        read_only_fields = ('__all__',)
 
 
 class ReviewSerializer(serializers.ModelSerializer):
