@@ -5,7 +5,8 @@ from django.contrib.staticfiles import finders
 
 from django.core.management import BaseCommand
 
-from reviews.models import User, Category, Genre, Title, GenreTitle
+from reviews.models import User, Category, Genre, Title, GenreTitle, Review, \
+    Comment
 
 logger = logging.getLogger(__name__)
 
@@ -57,15 +58,15 @@ class Command(BaseCommand):
             GenreTitle: {
                 'title': 'title_id',
                 'genre': 'genre_id'
+            },
+            Review: {
+                'author': 'author_id',
+                'title': 'title_id'
+            },
+            Comment: {
+                'author': 'author_id',
+                'review': 'review_id'
             }
-            # Reviews: {
-            #     'author': 'author_id',
-            #     'title': 'title_id'
-            # },
-            # Comments: {
-            #     'author': 'author_id',
-            #     'review': 'review_id'
-            # }
         }
 
         file_path = finders.find(f'data/{file_name}')
@@ -109,8 +110,8 @@ class Command(BaseCommand):
         if options['all'] or options['add_genre_title']:
             self.create_objects(GenreTitle, 'genre_title.csv')
 
-        # if options['all'] or options['add_reviews']:
-        #     self.create_object(Reviews, 'review.csv')
+        if options['all'] or options['add_reviews']:
+            self.create_objects(Review, 'review.csv')
 
-        # if options['all'] or options['add_comments']:
-        #     self.create_object(Comments, 'comments.csv')
+        if options['all'] or options['add_comments']:
+            self.create_objects(Comment, 'comments.csv')

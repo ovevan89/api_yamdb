@@ -1,3 +1,4 @@
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -87,7 +88,8 @@ class TitlePostSerializer(serializers.ModelSerializer):
         }
 
     def get_rating(self, obj):
-        return None
+        result = obj.reviews.aggregate(avg=Avg('score')).get('avg', None)
+        return result
 
 
 class TitleGetSerializer(TitlePostSerializer):
