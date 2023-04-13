@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.relations import SlugRelatedField
 
-from review.models import Category, Gener, Title, User
+from review.models import Category, Genre, Title, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -57,7 +57,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class GenerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Gener
+        model = Genre
         fields = "__all__"
         lookup_field = 'slug'
         extra_kwargs = {
@@ -74,7 +74,7 @@ class TitleSerializer(serializers.ModelSerializer):
     genre = SlugRelatedField(
         many=True,
         slug_field='slug',
-        queryset=Gener.objects.all()
+        queryset=Genre.objects.all()
     )
     # rating =
 

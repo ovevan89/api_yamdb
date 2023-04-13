@@ -11,7 +11,7 @@ from api import serializers
 from api.permissions import AdminOrReadOnly, IsAdmin
 from api.serializers import (CategorySerializer, GenerSerializer,
                              TitleSerializer)
-from review.models import Category, Gener, Title, User
+from review.models import Category, Genre, Title, User
 from utils.function import send_user_email
 
 
@@ -94,9 +94,9 @@ class CategoryViewSet(mixins.CreateModelMixin,
 
 
 class GenerViewSet(ModelViewSet):
-    model = Gener
+    model = Genre
     serializer_class = GenerSerializer
-    queryset = Gener.objects.all()
+    queryset = Genre.objects.all()
     lookup_field = 'slug'
     permission_classes = (AdminOrReadOnly,)
     filter_backends = [filters.SearchFilter]
