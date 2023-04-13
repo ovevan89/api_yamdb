@@ -9,7 +9,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('review', '0001_initial'),
+        ('reviews', '0001_initial'),
     ]
 
     operations = [
@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('text', models.TextField(help_text='Напишите отзыв', verbose_name='Текст отзыва')),
                 ('score', models.IntegerField(help_text='Введите оценку произведения от 1 до 10', validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(10)], verbose_name='Рейтинг')),
                 ('author', models.ForeignKey(help_text='Автор отзыва', on_delete=django.db.models.deletion.CASCADE, related_name='reviews', to=settings.AUTH_USER_MODEL, verbose_name='Автор')),
-                ('title', models.ForeignKey(help_text='Произведение, на которое написан отзыв', on_delete=django.db.models.deletion.CASCADE, related_name='reviews', to='review.title', verbose_name='Произведение')),
+                ('title', models.ForeignKey(help_text='Произведение, на которое написан отзыв', on_delete=django.db.models.deletion.CASCADE, related_name='reviews', to='reviews.title', verbose_name='Произведение')),
             ],
             options={
                 'ordering': ['-pub_date'],
@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
                 ('text', models.TextField(help_text='Текст комментария', verbose_name='Комментарий')),
                 ('pub_date', models.DateTimeField(auto_now_add=True, verbose_name='Дата отзыва')),
                 ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to=settings.AUTH_USER_MODEL, verbose_name='Автор')),
-                ('review', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='review.review', verbose_name='Отзыв')),
+                ('reviews', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='reviews.review', verbose_name='Отзыв')),
             ],
             options={
                 'ordering': ['-pub_date'],

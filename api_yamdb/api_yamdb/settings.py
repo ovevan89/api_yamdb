@@ -25,7 +25,7 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework',
     'rest_framework_simplejwt',
-    'review',
+    'reviews',
     'api',
     'initial_setup',
 ]
@@ -111,7 +111,7 @@ STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
 
 # Use User Model
 
-AUTH_USER_MODEL = 'review.User'
+AUTH_USER_MODEL = 'reviews.User'
 
 # Send Email
 

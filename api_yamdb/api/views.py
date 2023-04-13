@@ -9,15 +9,12 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework_simplejwt.tokens import AccessToken
 
 from api import serializers
-from api.permissions import AdminOrReadOnly, IsAdmin, OwnerOrReadOnly
 from api.filters import TitleFilter
-from api.permissions import AdminOrReadOnly, IsAdmin
+from api.permissions import AdminOrReadOnly, IsAdmin, OwnerOrReadOnly
 from api.serializers import (CategorySerializer, GenerSerializer,
-                             TitleSerializer, ReviewSerializer,
-                             CommentSerializer)
-from review.models import Category, Genre, Title, User, Review, Comment
-                             TitlePostSerializer, TitleGetSerializer)
-from review.models import Category, Genre, Title, User
+                             TitlePostSerializer, TitleGetSerializer,
+                             ReviewSerializer, CommentSerializer)
+from reviews.models import Category, Genre, Title, User
 from utils.function import send_user_email
 
 

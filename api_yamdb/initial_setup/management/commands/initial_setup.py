@@ -5,7 +5,7 @@ from django.contrib.staticfiles import finders
 
 from django.core.management import BaseCommand
 
-from review.models import User, Category, Genre, Title, GenreTitle
+from reviews.models import User, Category, Genre, Title, GenreTitle
 
 logger = logging.getLogger(__name__)
 
