@@ -1,21 +1,27 @@
 import datetime
 
-from django.core.validators import MaxValueValidator
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MaxValueValidator, RegexValidator
+from django.db import models
 
 
 class User(AbstractUser):
     ROLES = [
-        ('USER', 'Пользователь'),
-        ('MODERATOR', 'Модератор'),
-        ('ADMIN', 'Администратор'),
+        ('user', 'Пользователь'),
+        ('moderator', 'Модератор'),
+        ('admin', 'Администратор'),
     ]
 
     username = models.CharField(
         verbose_name='Имя пользователя',
         max_length=150,
-        null=True,
+        validators=[
+            RegexValidator(
+                r'^[\w.@+-]+\Z',
+                'Поле "username" не соответствует формату.',
+                'invalid'
+            )
+        ],
         unique=True
     )
     email = models.EmailField(
@@ -31,7 +37,7 @@ class User(AbstractUser):
         verbose_name='Роль',
         max_length=50,
         choices=ROLES,
-        default='USER'
+        default='user'
     )
 
     USERNAME_FIELD = 'email'
@@ -41,12 +47,18 @@ class User(AbstractUser):
         ordering = ['id']
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
+        constraints = [
+            models.CheckConstraint(
+                check=~models.Q(username__iexact='me'),
+                name='username cant be is me'
+            )
+        ]
 
     def is_administrator(self):
-        return self.is_superuser or self.role == 'ADMIN'
+        return self.is_superuser or self.role == 'admin'
 
     def is_moderator(self):
-        return self.role == 'MODERATOR'
+        return self.role == 'moderator'
 
 
 class Category(models.Model):
