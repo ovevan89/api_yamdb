@@ -46,20 +46,25 @@ class GenerSerializer(serializers.ModelSerializer):
 
 
 class TitleSerializer(serializers.ModelSerializer):
-    # todo преопределить поля категории и жанра
+    # todo добавить поле рейтинг
     category = SlugRelatedField(
-        read_only=True,
-        slug_field='slug'
+        slug_field='slug',
+        queryset=Category.objects.all()
     )
     genre = SlugRelatedField(
         many=True,
-        read_only=True,
-        slug_field='slug'
+        slug_field='slug',
+        queryset=Gener.objects.all()
     )
+    # rating =
 
     class Meta:
         model = Title
         fields = "__all__"
+        extra_kwargs = {
+            'genre': {'required': True},
+            'category': {'required': True}
+        }
 
 
 class ReviewSerializer(serializers.ModelSerializer):
