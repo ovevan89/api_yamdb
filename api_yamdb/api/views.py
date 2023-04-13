@@ -14,7 +14,7 @@ from api.permissions import AdminOrReadOnly, IsAdmin, OwnerOrReadOnly
 from api.serializers import (CategorySerializer, GenerSerializer,
                              TitlePostSerializer, TitleGetSerializer,
                              ReviewSerializer, CommentSerializer)
-from reviews.models import Category, Genre, Title, User
+from reviews.models import Category, Genre, Title, User, Review
 from utils.function import send_user_email
 
 
@@ -128,7 +128,7 @@ class TitleViewSet(ModelViewSet):
 
 class ReviewViewSet(ModelViewSet):
     serializer_class = ReviewSerializer
-    permission_classes = (OwnerOrReadOnly, IsAuthenticatedOrReadOnly)
+    permission_classes = (OwnerOrReadOnly, )
 
     def get_queryset(self):
         title_id = self.kwargs.get('title_id')
@@ -139,6 +139,7 @@ class ReviewViewSet(ModelViewSet):
         title_id = self.kwargs.get('title_id')
         title = get_object_or_404(Title, id=title_id)
         serializer.save(author=self.request.user, title=title)
+
 
 class CommentViewSet(ModelViewSet):
     serializer_class = CommentSerializer

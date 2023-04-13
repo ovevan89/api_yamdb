@@ -60,7 +60,7 @@ class User(AbstractUser):
         return self.is_superuser or self.role == 'admin'
 
     def is_moderator(self):
-        return self.role == 'moderator'
+        return self.role == 'moderator' or self.is_administrator()
 
 
 class Category(models.Model):
