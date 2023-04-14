@@ -1,4 +1,3 @@
-from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -36,7 +35,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         fields = ('email', 'username')
 
     def validate_username(self, value):
-        if value.lower() == "me":
+        if value.lower() == "me" or \
+                User.objects.filter(username='me').exists():
             raise ValidationError("Username 'me' is not valid")
         return value
 
@@ -77,7 +77,7 @@ class TitlePostSerializer(serializers.ModelSerializer):
         slug_field='slug',
         queryset=Genre.objects.all()
     )
-    rating = serializers.SerializerMethodField(read_only=True)
+    rating = serializers.FloatField(source='rating_avg', read_only=True)
 
     class Meta:
         model = Title
@@ -87,9 +87,9 @@ class TitlePostSerializer(serializers.ModelSerializer):
             'category': {'required': True}
         }
 
-    def get_rating(self, obj):
-        result = obj.reviews.aggregate(avg=Avg('score')).get('avg', None)
-        return result
+    # def get_rating(self, obj):
+    #     result = obj.reviews.aggregate(avg=Avg('score')).get('avg', None)
+    #     return result
 
 
 class TitleGetSerializer(TitlePostSerializer):
