@@ -163,6 +163,7 @@ class Review(models.Model):
                 name='unique_review'
             ),
         ]
+        db_table = 'tbl_review'
 
     def __str__(self):
         return self.text
@@ -191,3 +192,4 @@ class Comment(models.Model):
     class Meta:
         ordering = ['-pub_date']
         verbose_name = 'comment'
+        db_table = 'comment'
