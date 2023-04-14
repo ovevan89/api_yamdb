@@ -34,7 +34,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         fields = ('email', 'username')
 
     def validate_username(self, value):
-        if value.lower() == "me" or User.objects.filter(username='me'):
+        if value.lower() == "me":
             raise ValidationError("Username 'me' is not valid")
         return value
 
@@ -66,7 +66,7 @@ class GenerSerializer(serializers.ModelSerializer):
 
 
 class TitleSerializer(serializers.ModelSerializer):
-    # todo переопределить поля категории и жанра
+    # todo преопределить поля категории и жанра
     category = SlugRelatedField(
         read_only=True,
         slug_field='slug'
