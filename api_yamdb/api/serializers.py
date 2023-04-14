@@ -87,10 +87,6 @@ class TitlePostSerializer(serializers.ModelSerializer):
             'category': {'required': True}
         }
 
-    # def get_rating(self, obj):
-    #     result = obj.reviews.aggregate(avg=Avg('score')).get('avg', None)
-    #     return result
-
 
 class TitleGetSerializer(TitlePostSerializer):
     category = CategorySerializer()
