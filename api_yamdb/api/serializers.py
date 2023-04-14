@@ -77,7 +77,7 @@ class TitlePostSerializer(serializers.ModelSerializer):
         slug_field='slug',
         queryset=Genre.objects.all()
     )
-    rating = serializers.SerializerMethodField(read_only=True)
+    rating = serializers.FloatField(source='rating_avg', read_only=True)
 
     class Meta:
         model = Title
@@ -87,9 +87,9 @@ class TitlePostSerializer(serializers.ModelSerializer):
             'category': {'required': True}
         }
 
-    def get_rating(self, obj):
-        result = obj.reviews.aggregate(avg=Avg('score')).get('avg', None)
-        return result
+    # def get_rating(self, obj):
+    #     result = obj.reviews.aggregate(avg=Avg('score')).get('avg', None)
+    #     return result
 
 
 class TitleGetSerializer(TitlePostSerializer):

@@ -70,6 +70,10 @@ class Category(models.Model):
     def __str__(self):
         return self.slug
 
+    class Meta:
+        verbose_name = 'category'
+        db_table = 'tbl_category'
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=256)
@@ -78,11 +82,16 @@ class Genre(models.Model):
     def __str__(self):
         return self.slug
 
+    class Meta:
+        verbose_name = 'genre'
+        db_table = 'tbl_genre'
+
 
 class Title(models.Model):
     name = models.CharField(max_length=256)
     year = models.PositiveSmallIntegerField(
-        validators=[MaxValueValidator(datetime.date.today().year)]
+        validators=[MaxValueValidator(datetime.date.today().year)],
+        db_index=True
     )
     description = models.TextField(blank=True, null=True)
     genre = models.ManyToManyField(
@@ -100,10 +109,18 @@ class Title(models.Model):
     def __str__(self):
         return f'{self.name} - {self.year}'
 
+    class Meta:
+        verbose_name = 'title'
+        db_table = 'tbl_title'
+
 
 class GenreTitle(models.Model):
     genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
     title = models.ForeignKey(Title, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'gener_title'
+        db_table = 'tbl_gener_title'
 
 
 class Review(models.Model):
