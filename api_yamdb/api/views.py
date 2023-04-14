@@ -54,11 +54,11 @@ def create_user(request):
     username = request.data.get('username')
     email = request.data.get('email')
     if User.objects.filter(username=username, email=email).exists():
-        send_user_email(request.data['username'], email=request.data['email'])
+        send_user_email(username, email)
     else:
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        send_user_email(request.data['username'], email=request.data['email'])
+        send_user_email(username, email)
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response({'detail': 'Письмо отправлено'}, status=status.HTTP_200_OK)
 
