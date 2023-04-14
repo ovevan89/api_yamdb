@@ -55,6 +55,7 @@ class User(AbstractUser):
                 name='username cant be is me'
             )
         ]
+        db_table = 'tbl_users'
 
     def is_administrator(self):
         return self.is_superuser or self.role == 'admin'

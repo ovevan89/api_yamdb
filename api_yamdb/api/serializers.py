@@ -1,4 +1,3 @@
-from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -36,7 +35,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         fields = ('email', 'username')
 
     def validate_username(self, value):
-        if value.lower() == "me" or User.objects.filter(username='me').exists():
+        if value.lower() == "me" or \
+                User.objects.filter(username='me').exists():
             raise ValidationError("Username 'me' is not valid")
         return value
 
