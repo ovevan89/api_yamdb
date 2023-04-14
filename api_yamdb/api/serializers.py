@@ -36,7 +36,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         fields = ('email', 'username')
 
     def validate_username(self, value):
-        if value.lower() == "me":
+        if value.lower() == "me" or User.objects.filter(username='me').exists():
             raise ValidationError("Username 'me' is not valid")
         return value
 
