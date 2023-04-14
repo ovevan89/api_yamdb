@@ -146,16 +146,17 @@ class Review(models.Model):
         help_text='Напишите отзыв'
     )
     score = models.IntegerField(
-        verbose_name='Рейтинг',
+        verbose_name='Оценка',
         validators=[
-            MinValueValidator(1),
-            MaxValueValidator(10)
+            MinValueValidator(1, 'Минимальная оценка 1'),
+            MaxValueValidator(10, 'Максимальная оценка 10')
         ],
         help_text='Введите оценку произведения от 1 до 10',
     )
 
     class Meta:
         ordering = ['-pub_date']
+        verbose_name = 'review'
         constraints = [
             models.UniqueConstraint(
                 fields=['title', 'author'],
@@ -189,3 +190,4 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-pub_date']
+        verbose_name = 'comment'
