@@ -55,6 +55,7 @@ class User(AbstractUser):
                 name='username cant be is me'
             )
         ]
+        db_table = 'tbl_users'
 
     def is_administrator(self):
         return self.is_superuser or self.role == 'admin'
@@ -70,6 +71,10 @@ class Category(models.Model):
     def __str__(self):
         return self.slug
 
+    class Meta:
+        verbose_name = 'category'
+        db_table = 'tbl_category'
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=256)
@@ -78,11 +83,16 @@ class Genre(models.Model):
     def __str__(self):
         return self.slug
 
+    class Meta:
+        verbose_name = 'genre'
+        db_table = 'tbl_genre'
+
 
 class Title(models.Model):
     name = models.CharField(max_length=256)
     year = models.PositiveSmallIntegerField(
-        validators=[MaxValueValidator(datetime.date.today().year)]
+        validators=[MaxValueValidator(datetime.date.today().year)],
+        db_index=True
     )
     description = models.TextField(blank=True, null=True)
     genre = models.ManyToManyField(
@@ -100,10 +110,18 @@ class Title(models.Model):
     def __str__(self):
         return f'{self.name} - {self.year}'
 
+    class Meta:
+        verbose_name = 'title'
+        db_table = 'tbl_title'
+
 
 class GenreTitle(models.Model):
     genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
     title = models.ForeignKey(Title, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'gener_title'
+        db_table = 'tbl_gener_title'
 
 
 class Review(models.Model):
@@ -129,22 +147,24 @@ class Review(models.Model):
         help_text='Напишите отзыв'
     )
     score = models.IntegerField(
-        verbose_name='Рейтинг',
+        verbose_name='Оценка',
         validators=[
-            MinValueValidator(1),
-            MaxValueValidator(10)
+            MinValueValidator(1, 'Минимальная оценка 1'),
+            MaxValueValidator(10, 'Максимальная оценка 10')
         ],
         help_text='Введите оценку произведения от 1 до 10',
     )
 
     class Meta:
         ordering = ['-pub_date']
+        verbose_name = 'review'
         constraints = [
             models.UniqueConstraint(
                 fields=['title', 'author'],
                 name='unique_review'
             ),
         ]
+        db_table = 'tbl_review'
 
     def __str__(self):
         return self.text
@@ -172,3 +192,5 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-pub_date']
+        verbose_name = 'comment'
+        db_table = 'comment'

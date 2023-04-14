@@ -1,4 +1,5 @@
 from django.contrib.auth.tokens import default_token_generator
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, mixins, permissions, status, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
@@ -16,6 +17,13 @@ from api.serializers import (CategorySerializer, GenerSerializer,
                              ReviewSerializer, CommentSerializer)
 from reviews.models import Category, Genre, Title, User, Review
 from utils.function import send_user_email
+
+
+class CasModelViewSet(mixins.CreateModelMixin,
+                      mixins.DestroyModelMixin,
+                      mixins.ListModelMixin,
+                      GenericViewSet):
+    pass
 
 
 class UserModelViewSet(viewsets.ModelViewSet):
@@ -82,10 +90,7 @@ def get_token(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CategoryViewSet(mixins.CreateModelMixin,
-                      mixins.DestroyModelMixin,
-                      mixins.ListModelMixin,
-                      GenericViewSet):
+class CategoryViewSet(CasModelViewSet):
     model = Category
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
@@ -96,10 +101,7 @@ class CategoryViewSet(mixins.CreateModelMixin,
     pagination_class = LimitOffsetPagination
 
 
-class GenerViewSet(mixins.CreateModelMixin,
-                   mixins.DestroyModelMixin,
-                   mixins.ListModelMixin,
-                   GenericViewSet):
+class GenerViewSet(CasModelViewSet):
     model = Genre
     serializer_class = GenerSerializer
     queryset = Genre.objects.all()
@@ -116,14 +118,15 @@ class TitleViewSet(ModelViewSet):
     queryset = Title.objects.all()
     permission_classes = (AdminOrReadOnly,)
     filterset_class = TitleFilter
-    # filter_backends = [filters.SearchFilter]
-    # search_fields = ('name', 'year', 'category__slug', 'genre__slug')
     pagination_class = LimitOffsetPagination
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return TitleGetSerializer
         return TitlePostSerializer
+
+    def get_queryset(self):
+        return Title.objects.all().annotate(rating_avg=Avg('reviews__score'))
 
 
 class ReviewViewSet(ModelViewSet):
